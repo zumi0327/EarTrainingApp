@@ -4,7 +4,7 @@ let noteOscillator = null;
 
 function getRandomFrequency() {
     const baseFrequency = 220; // A3（基本となる低いAの周波数）
-    const maxSteps = 24; // 2オクターブ分の半音ステップ
+    const maxSteps = 12; // 1オクターブ分の半音ステップ
     const randomStep = Math.floor(Math.random() * maxSteps); // 0から23のランダムな値
     return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
 }
