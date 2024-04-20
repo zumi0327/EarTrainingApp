@@ -84,3 +84,32 @@ function getRandomFrequency() {
     const randomStep = Math.floor(Math.random() * maxSteps); // 0から11のランダムな値
     return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('circleOfFifthsContainer');
+    const radius = 100; // 半径
+    const centerX = 150; // コンテナの中心X
+    const centerY = 150; // コンテナの中心Y
+
+    circleOfFifths.forEach((note, index) => {
+        const angle = (index / 12) * Math.PI * 2; // 360度を12等分
+        const x = centerX + radius * Math.cos(angle) - 15; // ボタンの位置調整
+        const y = centerY + radius * Math.sin(angle) - 15;
+
+        const button = document.createElement('button');
+        button.className = 'circleButton';
+        button.style.left = `${x}px`;
+        button.style.top = `${y}px`;
+        button.textContent = note;
+        button.onclick = () => selectDegree(index); // 選択された音程のインデックスを取得
+
+        container.appendChild(button);
+    });
+});
+
+function selectDegree(index) {
+    console.log("Selected degree:", circleOfFifths[index]);
+    // ここで選択された度数を保存して後で使用
+}
+
