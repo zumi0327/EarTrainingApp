@@ -86,30 +86,36 @@ function getRandomFrequency() {
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('circleOfFifthsContainer');
-    const radius = 100; // 半径
-    const centerX = 150; // コンテナの中心X
-    const centerY = 150; // コンテナの中心Y
+    const baseNote = 'C'; // ここでドローン音を設定
+    const notes = ["C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F"];
+    const startIndex = notes.indexOf(baseNote);
+    const orderedNotes = [...notes.slice(startIndex), ...notes.slice(0, startIndex)];
 
-    circleOfFifths.forEach((note, index) => {
-        const angle = (index / 12) * Math.PI * 2; // 360度を12等分
-        const x = centerX + radius * Math.cos(angle) - 15; // ボタンの位置調整
-        const y = centerY + radius * Math.sin(angle) - 15;
-
+    orderedNotes.forEach((note, index) => {
+        const angle = (index / 12) * Math.PI * 2 - Math.PI / 2; // 0時の方向に1度を配置
+        const x = Math.cos(angle) * 100 + 135; // 円の半径100、中心135
+        const y = Math.sin(angle) * 100 + 135;
+        
         const button = document.createElement('button');
         button.className = 'circleButton';
         button.style.left = `${x}px`;
         button.style.top = `${y}px`;
         button.textContent = note;
-        button.onclick = () => selectDegree(index); // 選択された音程のインデックスを取得
-
+        button.onclick = () => playDegree(index); // 選択された音程に基づいて再生
         container.appendChild(button);
     });
 });
 
-function selectDegree(index) {
-    console.log("Selected degree:", circleOfFifths[index]);
-    // ここで選択された度数を保存して後で使用
+function playDegree(degreeIndex) {
+    const baseFrequency = 440; // A4を基本とする
+    const frequency = baseFrequency * Math.pow(2, degreeIndex / 12);
+    if (noteSource) {
+        noteSource.stop();
+        noteSource.disconnect();
+    }
+    noteSource = playSample(sampleBuffer, frequency);
 }
+
 
