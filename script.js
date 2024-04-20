@@ -3,6 +3,13 @@ let droneOscillator = null;
 let noteOscillator = null;
 
 document.getElementById('startButton').addEventListener('click', () => {
+    // 既存のドローン音が再生中であれば、停止して接続を切断します
+    if (droneOscillator) {
+        droneOscillator.stop();
+        droneOscillator.disconnect();
+    }
+
+    // 新しいドローン音を作成して再生
     droneOscillator = audioContext.createOscillator();
     droneOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4の音
     droneOscillator.connect(audioContext.destination);
