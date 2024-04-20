@@ -32,8 +32,9 @@ document.getElementById('playNoteButton').addEventListener('click', () => {
     noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
     noteOscillator.connect(audioContext.destination);
     noteOscillator.start();
-    noteOscillator.stop(audioContext.currentTime + 0.5); // 0.5秒後に停止
+    noteOscillator.stop(audioContext.currentTime + 10); // 10秒後に停止
 
+	
     displayInterval(randomInterval);
 });
 
