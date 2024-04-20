@@ -110,7 +110,7 @@ document.getElementById('playNoteButton').addEventListener('click', () => {
 });
 
 function displayInterval(interval) {
-    const intervals = ["P1", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7"];
+    const intervals = ["P1", "-2/-9", "P2/9", "-3", "3", "P4/11", "-5/+11", "P5", "-6/-13", "6/13", "m7", "M7"];
     document.getElementById('noteInfo').innerText = `再生したノート: ${intervals[interval]}`;
 }
 
