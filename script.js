@@ -1,117 +1,68 @@
 const audioContext = new AudioContext();
-let droneOscillator = null;
-let noteOscillator = null;
+let droneSource = null;  // ドローン音のソースノード
+let noteSource = null;   // ノートのソースノード
 
-function getRandomFrequency() {
-    const baseFrequency = 220; // A3（基本となる低いAの周波数）
-    const maxSteps = 24; // 2オクターブ分の半音ステップ
-    const randomStep = Math.floor(Math.random() * maxSteps); // 0から23までのランダムな値
-    return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
+async function loadSample(url) {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    return audioContext.decodeAudioData(arrayBuffer);
 }
 
+function playSample(buffer, frequency) {
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;  // ループを有効にする
+    source.loopStart = 0;  // ループ開始位置（秒）
+    source.loopEnd = buffer.duration;  // ループ終了位置（秒、バッファ全体を使用）
+    const filter = audioContext.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = frequency;  // 周波数に合わせてフィルターを調整
+    source.connect(filter);
+    filter.connect(audioContext.destination);
+    source.start();
+    return source;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // サンプルをロード
+    const sampleBuffer = await loadSample('el_piano_sample.mp3');
+    droneSource = playSample(sampleBuffer, 440); // デフォルトでA4の周波数で再生開始
+    noteSource = playSample(sampleBuffer, 440); // デフォルトでA4の周波数で再生開始
+});
+
 document.getElementById('startButton').addEventListener('click', () => {
-    if (droneOscillator) {
-        droneOscillator.stop();
-        droneOscillator.disconnect();
-    }
     const frequency = getRandomFrequency(); // ドローン用のランダムな周波数を取得
-    droneOscillator = audioContext.createOscillator();
-    droneOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // ランダムな周波数の音
-    droneOscillator.connect(audioContext.destination);
-    droneOscillator.start();
-    console.log("Drone frequency: " + frequency); // 周波数の確認用ログ
+    if (droneSource) {
+        droneSource.stop();  // 既存のソースを停止
+    }
+    droneSource = playSample(droneSource.buffer, frequency); // バッファを使用してサンプルを再生
 });
 
 document.getElementById('stopButton').addEventListener('click', () => {
-    if (droneOscillator) {
-        droneOscillator.stop();
-        droneOscillator.disconnect();
-        droneOscillator = null; // オシレーターの参照をクリア
+    if (droneSource) {
+        droneSource.stop();  // ドローン音を停止
+        droneSource.disconnect();
+        droneSource = null;
+    }
+    if (noteSource) {
+        noteSource.stop();  // ノートを停止
+        noteSource.disconnect();
+        noteSource = null;
     }
 });
 
 document.getElementById('playNoteButton').addEventListener('click', () => {
-    if (noteOscillator) {
-        noteOscillator.stop();
-        noteOscillator.disconnect();
-    }
     const randomInterval = Math.floor(Math.random() * 12); // 0から11までのランダムな値
-    const frequency = droneOscillator.frequency.value * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
-    noteOscillator = audioContext.createOscillator();
-    noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-    noteOscillator.connect(audioContext.destination);
-    noteOscillator.start();
-
-    // 10秒後にノートを停止し、その後音程を表示する
-    const stopTime = audioContext.currentTime + 10;
-    noteOscillator.stop(stopTime);
-
-    setTimeout(() => {
-        noteOscillator.disconnect();
-        displayInterval(randomInterval);
-    }, 10000); // 10000ミリ秒 = 10秒
+    const frequency = droneSource.frequency.value * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
+    if (noteSource) {
+        noteSource.stop();  // 既存のノートを停止
+    }
+    noteSource = playSample(noteSource.buffer, frequency); // バッファを使用してサンプルを再生
 });
-
-function displayInterval(interval) {
-    const intervals = ["P1", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7"];
-    document.getElementById('noteInfo').innerText = `再生したノート: ${intervals[interval]}`;
-}
-const audioContext = new AudioContext();
-let droneOscillator = null;
-let noteOscillator = null;
 
 function getRandomFrequency() {
     const baseFrequency = 220; // A3（基本となる低いAの周波数）
     const maxSteps = 12; // 1オクターブ分の半音ステップ
-    const randomStep = Math.floor(Math.random() * maxSteps); // 0から23のランダムな値
+    const randomStep = Math.floor(Math.random() * maxSteps); // 0から11のランダムな値
     return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
 }
-
-document.getElementById('startButton').addEventListener('click', () => {
-    if (droneOscillator) {
-        droneOscillator.stop();
-        droneOscillator.disconnect();
-    }
-    const frequency = getRandomFrequency(); // ドローン用のランダムな周波数を取得
-    droneOscillator = audioContext.createOscillator();
-    droneOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // ランダムな周波数の音
-    droneOscillator.connect(audioContext.destination);
-    droneOscillator.start();
-});
-
-document.getElementById('stopButton').addEventListener('click', () => {
-    if (droneOscillator) {
-        droneOscillator.stop();
-        droneOscillator.disconnect();
-        droneOscillator = null; // オシレーターの参照をクリア
-    }
-});
-
-document.getElementById('playNoteButton').addEventListener('click', () => {
-    if (noteOscillator) {
-        noteOscillator.stop();
-        noteOscillator.disconnect();
-    }
-    const randomInterval = Math.floor(Math.random() * 12); // 0から11までのランダムな値
-    const frequency = droneOscillator.frequency.value * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
-    noteOscillator = audioContext.createOscillator();
-    noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-    noteOscillator.connect(audioContext.destination);
-    noteOscillator.start();
-
-    // 10秒後にノートを停止し、その後音程を表示する
-    const stopTime = audioContext.currentTime + 10;
-    noteOscillator.stop(stopTime);
-
-    setTimeout(() => {
-        noteOscillator.disconnect();
-        displayInterval(randomInterval);
-    }, 10000); // 10000ミリ秒 = 10秒
-});
-
-function displayInterval(interval) {
-    const intervals = ["P1", "-2/-9", "P2/9", "-3", "3", "P4/11", "-5/+11", "P5", "-6/-13", "6/13", "m7", "M7"];
-    document.getElementById('noteInfo').innerText = `再生したノート: ${intervals[interval]}`;
-}
-
-
