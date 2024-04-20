@@ -58,17 +58,21 @@ document.getElementById('playNoteButton').addEventListener('click', () => {
     const frequency = droneFrequency * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
     if (noteSource) {
         noteSource.stop();  // 既存のノートを停止
+        noteSource.disconnect();
     }
     noteSource = playSample(sampleBuffer, frequency); // バッファを使用してサンプルを再生
     
     setTimeout(() => {
-        noteSource.disconnect();
+        if (noteSource) {
+            noteSource.disconnect(); // ソースがまだ接続されていれば切断
+        }
         displayInterval(randomInterval);
-    }, 5000); //5000ミリ秒 = 5秒
+    }, 5000); // 5000ミリ秒 = 5秒
     
     const stopTime = audioContext.currentTime + 5; // 5秒後に停止
     noteSource.stop(stopTime);
 });
+
 
 function displayInterval(interval) {
     const intervals = ["P1", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7"];
