@@ -2,13 +2,21 @@ const audioContext = new AudioContext();
 let droneOscillator = null;
 let noteOscillator = null;
 
+function getRandomFrequency() {
+    const baseFrequency = 220; // A3（基本となる低いAの周波数）
+    const maxSteps = 24; // 2オクターブ分の半音ステップ
+    const randomStep = Math.floor(Math.random() * maxSteps); // 0から23のランダムな値
+    return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
+}
+
 document.getElementById('startButton').addEventListener('click', () => {
     if (droneOscillator) {
         droneOscillator.stop();
         droneOscillator.disconnect();
     }
+    const frequency = getRandomFrequency(); // ドローン用のランダムな周波数を取得
     droneOscillator = audioContext.createOscillator();
-    droneOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4の音
+    droneOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // ランダムな周波数の音
     droneOscillator.connect(audioContext.destination);
     droneOscillator.start();
 });
@@ -27,7 +35,7 @@ document.getElementById('playNoteButton').addEventListener('click', () => {
         noteOscillator.disconnect();
     }
     const randomInterval = Math.floor(Math.random() * 12); // 0から11までのランダムな値
-    const frequency = 440 * Math.pow(2, randomInterval / 12); // 音程を計算
+    const frequency = droneOscillator.frequency.value * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
     noteOscillator = audioContext.createOscillator();
     noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
     noteOscillator.connect(audioContext.destination);
