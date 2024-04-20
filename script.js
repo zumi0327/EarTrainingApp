@@ -34,8 +34,8 @@ function playSample(buffer, frequency, loop = false) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     sampleBuffer = await loadSample('https://raw.githubusercontent.com/zumi0327/EarTrainingApp/main/el_piano_sample.mp3');
-    droneSource = playSample(sampleBuffer, droneFrequency, true); // ドローン音をループ再生
-    noteSource = playSample(sampleBuffer, 440); // ノート音を非ループで再生
+    //droneSource = playSample(sampleBuffer, droneFrequency, true); // ドローン音をループ再生
+    //noteSource = playSample(sampleBuffer, 440); // ノート音を非ループで再生
 });
 
 document.getElementById('startButton').addEventListener('click', () => {
@@ -44,7 +44,7 @@ document.getElementById('startButton').addEventListener('click', () => {
         droneSource.disconnect();
     }
      droneFrequency = getRandomFrequency(); // ドローン用のランダムな周波数を取得
-    droneSource = playSample(sampleBuffer, frequency, true); // バッファを使用してドローン音をループ再生
+    droneSource = playSample(sampleBuffer, droneFrequency, true); // バッファを使用してドローン音をループ再生
 });
 
 document.getElementById('stopButton').addEventListener('click', () => {
