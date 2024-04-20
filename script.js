@@ -25,7 +25,8 @@ function playSample(buffer, frequency) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     // サンプルをロード
-    const sampleBuffer = await loadSample('https://github.com/zumi0327/EarTrainingApp/blob/main/el_piano_sample.mp3');
+    const sampleBuffer = await loadSample('https://raw.githubusercontent.com/zumi0327/EarTrainingApp/main/el_piano_sample.mp3
+);
     droneSource = playSample(sampleBuffer, 440); // デフォルトでA4の周波数で再生開始
     noteSource = playSample(sampleBuffer, 440); // デフォルトでA4の周波数で再生開始
 });
