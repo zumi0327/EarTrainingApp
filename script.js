@@ -34,8 +34,6 @@ function playSample(buffer, frequency, loop = false) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     sampleBuffer = await loadSample('https://raw.githubusercontent.com/zumi0327/EarTrainingApp/main/el_piano_sample.mp3');
-    //droneSource = playSample(sampleBuffer, droneFrequency, true); // ドローン音をループ再生
-    //noteSource = playSample(sampleBuffer, 440); // ノート音を非ループで再生
 });
 
 document.getElementById('startButton').addEventListener('click', () => {
