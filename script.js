@@ -9,16 +9,15 @@ async function loadSample(url) {
     return audioContext.decodeAudioData(arrayBuffer);
 }
 
-
 function playSample(buffer, frequency) {
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
     source.loop = true;  // ループを有効にする
-    source.loopStart = 0.1;  // ループ開始位置（秒）
+    source.loopStart = 0;  // ループ開始位置（秒）
     source.loopEnd = buffer.duration;  // ループ終了位置（秒、バッファ全体を使用）
-
+    
     // ピッチ（周波数）を調整するためのplaybackRateを設定
-    const baseFrequency = 220; // サンプルの元のピッチがA3（220Hz）
+    const baseFrequency = 440; // サンプルの元のピッチがA4（440Hz）だと仮定
     source.playbackRate.value = frequency / baseFrequency;
 
     const filter = audioContext.createBiquadFilter();
@@ -30,7 +29,6 @@ function playSample(buffer, frequency) {
     return source;
 }
 
-
 document.addEventListener('DOMContentLoaded', async () => {
     // サンプルをロード
     sampleBuffer = await loadSample('https://raw.githubusercontent.com/zumi0327/EarTrainingApp/main/el_piano_sample.mp3');
@@ -38,41 +36,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     noteSource = playSample(sampleBuffer, 440); // デフォルトでA4の周波数で再生開始
 });
 
-document.getElementById('startButton').addEventListener('click', () => {
-    const frequency = getRandomFrequency(); // ドローン用のランダムな周波数を取得
-    if (droneSource) {
-        droneSource.stop();  // 既存のソースを停止
-    }
-    droneSource = playSample(sampleBuffer, frequency); // バッファを使用してサンプルを再生
-});
-
-document.getElementById('stopButton').addEventListener('click', () => {
-    if (droneSource) {
-        droneSource.stop();  // ドローン音を停止
-        droneSource.disconnect();
-        droneSource = null;
-    }
-    if (noteSource) {
-        noteSource.stop();  // ノートを停止
-        noteSource.disconnect();
-        noteSource = null;
-    }
-});
-
 document.getElementById('playNoteButton').addEventListener('click', () => {
-    const randomInterval = Math.floor(Math.random() * 12) ; // 0から11までのランダムな値
-    const frequency = getRandomFrequency(true) * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
+    const randomInterval = Math.floor(Math.random() * 12); // 0から11までのランダムな値
+    const frequency = getRandomFrequency() * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
     if (noteSource) {
         noteSource.stop();  // 既存のノートを停止
     }
     noteSource = playSample(sampleBuffer, frequency); // バッファを使用してサンプルを再生
+    const stopTime = audioContext.currentTime + 10; // 10秒後に停止
+    noteSource.stop(stopTime);
+
+    setTimeout(() => {
+        noteSource.disconnect();
+        displayInterval(randomInterval);
+    }, 10000); // 10000ミリ秒 = 10秒
 });
 
-function getRandomFrequency(random=false) {
+function displayInterval(interval) {
+    const intervals = ["P1", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7"];
+    document.getElementById('noteInfo').innerText = `再生したノート: ${intervals[interval]}`;
+}
+
+function getRandomFrequency() {
     const baseFrequency = 220; // A3（基本となる低いAの周波数）
     const maxSteps = 12; // 1オクターブ分の半音ステップ
     const randomStep = Math.floor(Math.random() * maxSteps); // 0から11のランダムな値
-    if(random = true){
-        return baseFrequency * Math.pow(2, randomStep / 12) * Math.floor(Math.random()*2)
     return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
 }
