@@ -13,8 +13,8 @@ function playSample(buffer, frequency) {
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
     source.loop = true;  // ループを有効にする
-    source.loopStart = 0;  // ループ開始位置（秒）
-    source.loopEnd = buffer.duration;  // ループ終了位置（秒、バッファ全体を使用）
+    source.loopStart = 0.1;  // ループ開始位置（秒）
+    source.loopEnd = 5;  // ループ終了位置（秒、バッファ全体を使用）
     
     // ピッチ（周波数）を調整するためのplaybackRateを設定
     const baseFrequency = 440; // サンプルの元のピッチがA4（440Hz）だと仮定
