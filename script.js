@@ -1,6 +1,7 @@
 const audioContext = new AudioContext();
 let droneSource = null;  // ドローン音のソースノード
 let noteSource = null;   // ノートのソースノード
+let sampleBuffer = null; // サンプルバッファを保持
 
 async function loadSample(url) {
     const response = await fetch(url);
@@ -25,8 +26,7 @@ function playSample(buffer, frequency) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     // サンプルをロード
-    const sampleBuffer = await loadSample('https://raw.githubusercontent.com/zumi0327/EarTrainingApp/main/el_piano_sample.mp3
-);
+    sampleBuffer = await loadSample('https://raw.githubusercontent.com/zumi0327/EarTrainingApp/main/el_piano_sample.mp3');
     droneSource = playSample(sampleBuffer, 440); // デフォルトでA4の周波数で再生開始
     noteSource = playSample(sampleBuffer, 440); // デフォルトでA4の周波数で再生開始
 });
@@ -36,7 +36,7 @@ document.getElementById('startButton').addEventListener('click', () => {
     if (droneSource) {
         droneSource.stop();  // 既存のソースを停止
     }
-    droneSource = playSample(droneSource.buffer, frequency); // バッファを使用してサンプルを再生
+    droneSource = playSample(sampleBuffer, frequency); // バッファを使用してサンプルを再生
 });
 
 document.getElementById('stopButton').addEventListener('click', () => {
@@ -54,11 +54,11 @@ document.getElementById('stopButton').addEventListener('click', () => {
 
 document.getElementById('playNoteButton').addEventListener('click', () => {
     const randomInterval = Math.floor(Math.random() * 12); // 0から11までのランダムな値
-    const frequency = droneSource.frequency.value * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
+    const frequency = getRandomFrequency() * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
     if (noteSource) {
         noteSource.stop();  // 既存のノートを停止
     }
-    noteSource = playSample(noteSource.buffer, frequency); // バッファを使用してサンプルを再生
+    noteSource = playSample(sampleBuffer, frequency); // バッファを使用してサンプルを再生
 });
 
 function getRandomFrequency() {
