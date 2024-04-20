@@ -49,10 +49,11 @@ document.getElementById('startButton').addEventListener('click', () => {
 document.getElementById('stopButton').addEventListener('click', () => {
     if (droneSource) {
         droneSource.stop();  // ドローン音を停止
-        droneSource.disconnect();
-        droneSource = null;
+        droneSource.disconnect();  // 接続を切断
+        droneSource = null;  // 参照をクリア
     }
 });
+
 
 document.getElementById('playNoteButton').addEventListener('click', () => {
     const randomInterval = Math.floor(Math.random() * 12); // 0から11までのランダムな値
