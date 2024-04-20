@@ -32,13 +32,17 @@ document.getElementById('playNoteButton').addEventListener('click', () => {
     noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
     noteOscillator.connect(audioContext.destination);
     noteOscillator.start();
-    noteOscillator.stop(audioContext.currentTime + 10*1000); // 10秒後に停止
-
-	
-    displayInterval(randomInterval);
+    
+    // 10秒後にノートを停止し、その後音程を表示する
+    setTimeout(() => {
+        noteOscillator.stop();
+        noteOscillator.disconnect();
+        displayInterval(randomInterval);
+    }, 10000); // 10000ミリ秒 = 10秒
 });
 
 function displayInterval(interval) {
     const intervals = ["P1", "m2", "M2", "m3", "M3", "P4", "Tritone", "P5", "m6", "M6", "m7", "M7"];
     document.getElementById('noteInfo').innerText = `再生したノート: ${intervals[interval]}`;
 }
+
