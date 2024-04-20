@@ -60,17 +60,19 @@ document.getElementById('stopButton').addEventListener('click', () => {
 });
 
 document.getElementById('playNoteButton').addEventListener('click', () => {
-    const randomInterval = Math.floor(Math.random() * 12); // 0から11までのランダムな値
-    const frequency = getRandomFrequency() * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
+    const randomInterval = Math.floor(Math.random() * 12) ; // 0から11までのランダムな値
+    const frequency = getRandomFrequency(true) * Math.pow(2, randomInterval / 12); // ドローン音に基づくランダムな音程を計算
     if (noteSource) {
         noteSource.stop();  // 既存のノートを停止
     }
     noteSource = playSample(sampleBuffer, frequency); // バッファを使用してサンプルを再生
 });
 
-function getRandomFrequency() {
+function getRandomFrequency(random=false) {
     const baseFrequency = 220; // A3（基本となる低いAの周波数）
-    const maxSteps = 36; // 3オクターブ分の半音ステップ
+    const maxSteps = 12; // 1オクターブ分の半音ステップ
     const randomStep = Math.floor(Math.random() * maxSteps); // 0から11のランダムな値
+    if(random = true){
+        return baseFrequency * Math.pow(2, randomStep / 12) * Math.floor(Math.random()*2)
     return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
 }
