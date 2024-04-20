@@ -9,20 +9,27 @@ async function loadSample(url) {
     return audioContext.decodeAudioData(arrayBuffer);
 }
 
+
 function playSample(buffer, frequency) {
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
     source.loop = true;  // ループを有効にする
     source.loopStart = 0;  // ループ開始位置（秒）
     source.loopEnd = buffer.duration;  // ループ終了位置（秒、バッファ全体を使用）
+
+    // ピッチ（周波数）を調整するためのplaybackRateを設定
+    const baseFrequency = 220; // サンプルの元のピッチがA3（220Hz）
+    source.playbackRate.value = frequency / baseFrequency;
+
     const filter = audioContext.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.value = frequency;  // 周波数に合わせてフィルターを調整
+    filter.frequency.value = frequency * 2;  // フィルター周波数はピッチに依存せず、音のクリアさを保持
     source.connect(filter);
     filter.connect(audioContext.destination);
     source.start();
     return source;
 }
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     // サンプルをロード
