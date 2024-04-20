@@ -60,13 +60,14 @@ document.getElementById('playNoteButton').addEventListener('click', () => {
         noteSource.stop();  // 既存のノートを停止
     }
     noteSource = playSample(sampleBuffer, frequency); // バッファを使用してサンプルを再生
-    const stopTime = audioContext.currentTime + 8; // 8秒後に停止
-    noteSource.stop(stopTime);
-
+    
     setTimeout(() => {
         noteSource.disconnect();
         displayInterval(randomInterval);
-    }, 8000); //8000ミリ秒 = 8秒
+    }, 5000); //5000ミリ秒 = 5秒
+    
+    const stopTime = audioContext.currentTime + 5; // 5秒後に停止
+    noteSource.stop(stopTime);
 });
 
 function displayInterval(interval) {
