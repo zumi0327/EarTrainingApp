@@ -119,8 +119,9 @@ function playDegree(degreeIndex) {
         noteSource.stop();
         noteSource.disconnect();
     }
-    console.log(degreeIndex);
     noteSource = playSample(sampleBuffer, frequency); // バッファを使用してノートを再生
+    
+    console.log(degreeIndex);
 }
 
 
