@@ -94,6 +94,17 @@ const degrees = [
 
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('circleOfFifthsContainer');
+    const stopbutton = document.createElement('button');
+    button.className = 'circleButton';
+    button.style.left = `${150}px`;
+    button.style.top = `${150}px`;
+    button.textContent = 'stop';
+    button.onclick = () => {
+        noteSource.stop();
+        noteSource.disconnect();
+    }
+    container.appendChild(button);
+
 
    
     degrees.forEach((degree, index) => {
