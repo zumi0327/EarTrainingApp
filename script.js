@@ -98,10 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
    
     degrees.forEach((degree, index) => {
         // 0時の方向から始め、時計回りに配置
-        const angle = ((index / degrees.length) * 360 + 90) % 360;
-        const radians = angle * Math.PI / 180;
-        const x = Math.cos(radians) * 100 + 150; // 円の半径100、中心150
-        const y = Math.sin(radians) * 100 + 150;
+        const angle = (index / degrees.length) * Math.PI * 2 - Math.PI / 2; // 0時の方向に1度を配置
+        const x = Math.cos(angle) * 100 + 150; // 円の半径100、中心150
+        const y = Math.sin(angle) * 100 + 150;
+
 
         const button = document.createElement('button');
         button.className = 'circleButton';
