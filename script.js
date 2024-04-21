@@ -86,15 +86,22 @@ function getRandomFrequency() {
 }
 
 // 五度圏に表示するディグリー
-const degrees = [["P1",0], ["P5",7], ["M2",2], ["M6",9], ["M3",4], ["M7",11], ["Tritone",6] ,["m2",1], ["m6",8], ["m3",3], ["m7",10],["P4",5]];
+const degrees = [
+    ["P1", 0], ["P5", 7], ["M2", 2], ["M6", 9],
+    ["M3", 4], ["M7", 11], ["Tritone", 6],["m2", 1],
+    ["m6", 8], ["m3", 3], ["m7", 10], ["P4", 5]
+];
 
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('circleOfFifthsContainer');
 
+   
     degrees.forEach((degree, index) => {
-        const angle = (index / degrees.length) * Math.PI * 2 - Math.PI / 2; // 0時の方向に1度を配置
-        const x = Math.cos(angle) * 100 + 150; // 円の半径100、中心150
-        const y = Math.sin(angle) * 100 + 150;
+        // 0時の方向から始め、時計回りに配置
+        const angle = ((index / degrees.length) * 360 + 90) % 360;
+        const radians = angle * Math.PI / 180;
+        const x = Math.cos(radians) * 100 + 150; // 円の半径100、中心150
+        const y = Math.sin(radians) * 100 + 150;
 
         const button = document.createElement('button');
         button.className = 'circleButton';
@@ -106,14 +113,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 function playDegree(degreeIndex) {
     const frequency = droneFrequency * Math.pow(2, degreeIndex / 12);
     if (noteSource) {
         noteSource.stop();
         noteSource.disconnect();
     }
-    conosle.log(degreeIndex)
+    console.log(degreeIndex);
     noteSource = playSample(sampleBuffer, frequency); // バッファを使用してノートを再生
 }
 
