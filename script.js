@@ -85,37 +85,35 @@ function getRandomFrequency() {
     return baseFrequency * Math.pow(2, randomStep / 12); // ランダムな音高を計算
 }
 
+// 五度圏に表示するディグリー
+const degrees = [["P1",0], ["P5",7], ["M2",2], ["M6",9], ["M3",4], ["M7",11], ["Tritone",6] ,["m2",1], ["m6",8], ["m3",3], ["m7",10],["P4",5]];
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('circleOfFifthsContainer');
-    const baseNote = 'C'; // ここでドローン音を設定
-    const notes = ["C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F"];
-    const startIndex = notes.indexOf(baseNote);
-    const orderedNotes = [...notes.slice(startIndex), ...notes.slice(0, startIndex)];
 
-    orderedNotes.forEach((note, index) => {
-        const angle = (index / 12) * Math.PI * 2 - Math.PI / 2; // 0時の方向に1度を配置
-        const x = Math.cos(angle) * 100 + 135; // 円の半径100、中心135
-        const y = Math.sin(angle) * 100 + 135;
-        
+    degrees.forEach((degree, index) => {
+        const angle = (index / degrees.length) * Math.PI * 2 - Math.PI / 2; // 0時の方向に1度を配置
+        const x = Math.cos(angle) * 100 + 150; // 円の半径100、中心150
+        const y = Math.sin(angle) * 100 + 150;
+
         const button = document.createElement('button');
         button.className = 'circleButton';
         button.style.left = `${x}px`;
         button.style.top = `${y}px`;
-        button.textContent = note;
-        button.onclick = () => playDegree(index); // 選択された音程に基づいて再生
+        button.textContent = degree[0];
+        button.onclick = () => playDegree(degree[1]); // 選択されたディグリーに基づいて再生
         container.appendChild(button);
     });
 });
 
+
 function playDegree(degreeIndex) {
-    const baseFrequency = 440; // A4を基本とする
-    const frequency = baseFrequency * Math.pow(2, degreeIndex / 12);
+    const frequency = droneFrequency * Math.pow(2, degreeIndex / 12);
     if (noteSource) {
         noteSource.stop();
         noteSource.disconnect();
     }
-    noteSource = playSample(sampleBuffer, frequency);
+    noteSource = playSample(sampleBuffer, frequency); // バッファを使用してノートを再生
 }
 
 
