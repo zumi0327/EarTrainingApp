@@ -113,6 +113,7 @@ function playDegree(degreeIndex) {
         noteSource.stop();
         noteSource.disconnect();
     }
+    conosle.log(degreeIndex)
     noteSource = playSample(sampleBuffer, frequency); // バッファを使用してノートを再生
 }
 
